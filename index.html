@@ -3,12 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <title>Touched Times</title>
+</head>
+<body>
+  <h1 id="count">Touched times: ...</h1>
+  <button id="touchBtn">Touched</button>
+
   <script type="module">
-    // Firebase SDK v9 モジュール読み込み
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.24.0/firebase-app.js";
     import { getDatabase, ref, get, set, onValue } from "https://www.gstatic.com/firebasejs/9.24.0/firebase-database.js";
 
-    // あなたのFirebase設定（OK！）
     const firebaseConfig = {
       apiKey: "AIzaSyDLb0rnJuHLvwCtgOqD-PZZ8PGUZWUAx8c",
       authDomain: "practicing-e0341.firebaseapp.com",
@@ -20,7 +23,6 @@
       measurementId: "G-DSJTB6FWMJ"
     };
 
-    // 初期化
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
     const counterRef = ref(db, "touchCounter");
@@ -28,22 +30,16 @@
     const countEl = document.getElementById("count");
     const button = document.getElementById("touchBtn");
 
-    // 表示を更新
     onValue(counterRef, (snapshot) => {
       const count = snapshot.val() ?? 0;
       countEl.textContent = "Touched times: " + count;
     });
 
-    // ボタンで＋1
     button.addEventListener("click", async () => {
       const snapshot = await get(counterRef);
       const count = snapshot.val() ?? 0;
       await set(counterRef, count + 1);
     });
   </script>
-</head>
-<body>
-  <h1 id="count">Touched times: ...</h1>
-  <button id="touchBtn">Touched</button>
 </body>
 </html>
