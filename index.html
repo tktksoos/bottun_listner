@@ -3,60 +3,47 @@
 <head>
   <meta charset="UTF-8">
   <title>Touched Times</title>
-  <!-- Firebase CDN -->
-  <script src="https://www.gstatic.com/firebasejs/9.24.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.24.0/firebase-database.js"></script>
-</head>
-<body>
-  <h1 id="count">Touched times: ...</h1>
-  <button id="touchBtn">Touched</button>
+  <script type="module">
+    // Firebase SDK v9 モジュール読み込み
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.24.0/firebase-app.js";
+    import { getDatabase, ref, get, set, onValue } from "https://www.gstatic.com/firebasejs/9.24.0/firebase-database.js";
 
-  <script>
-    // あなたの Firebase 設定（practicing-e0341用）
+    // あなたのFirebase設定（OK！）
     const firebaseConfig = {
-      // Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: "AIzaSyDLb0rnJuHLvwCtgOqD-PZZ8PGUZWUAx8c",
-  authDomain: "practicing-e0341.firebaseapp.com",
-  projectId: "practicing-e0341",
-  storageBucket: "practicing-e0341.firebasestorage.app",
-  messagingSenderId: "864990807254",
-  appId: "1:864990807254:web:20874cceeb05fce9223577",
-  measurementId: "G-DSJTB6FWMJ"
-};
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
+      apiKey: "AIzaSyDLb0rnJuHLvwCtgOqD-PZZ8PGUZWUAx8c",
+      authDomain: "practicing-e0341.firebaseapp.com",
+      databaseURL: "https://practicing-e0341-default-rtdb.firebaseio.com",
+      projectId: "practicing-e0341",
+      storageBucket: "practicing-e0341.appspot.com",
+      messagingSenderId: "864990807254",
+      appId: "1:864990807254:web:20874cceeb05fce9223577",
+      measurementId: "G-DSJTB6FWMJ"
     };
 
-    // Firebase 初期化
-    const app = firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
-    const counterRef = db.ref("touchCounter");
+    // 初期化
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const counterRef = ref(db, "touchCounter");
 
     const countEl = document.getElementById("count");
     const button = document.getElementById("touchBtn");
 
-    // 初期表示：カウント取得
-    counterRef.on("value", (snapshot) => {
+    // 表示を更新
+    onValue(counterRef, (snapshot) => {
       const count = snapshot.val() ?? 0;
       countEl.textContent = "Touched times: " + count;
     });
 
-    // ボタンを押したらカウントアップ
+    // ボタンで＋1
     button.addEventListener("click", async () => {
-      const snapshot = await counterRef.get();
+      const snapshot = await get(counterRef);
       const count = snapshot.val() ?? 0;
-      counterRef.set(count + 1);
+      await set(counterRef, count + 1);
     });
   </script>
+</head>
+<body>
+  <h1 id="count">Touched times: ...</h1>
+  <button id="touchBtn">Touched</button>
 </body>
 </html>
